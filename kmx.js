@@ -1,11 +1,16 @@
 define(['require', 'kievII'], function(require, K2) {
 
+    var imgResources = null;
+
     /* This gets returned to the host as soon as the plugin is loaded */ 
     var pluginConf = {
-        osc: true,
+        name: "KMX",
+        osc: false,
         audioIn: 4,
         audioOut: 1,
-        canvas: {
+        version: '0.0.1-alpha1',
+        ui: {
+            type: 'canvas',
             width: 537,
             height: 680
         }
@@ -15,12 +20,12 @@ define(['require', 'kievII'], function(require, K2) {
     var pluginFunction = function (args, resources) {
         this.name = args.name;
         this.id = args.id;
-        
+
         var faderImage =  resources[0];
         var slotImage =  resources[1];
         var blackKnobImage =  resources[2];
         var redKnobImage = resources[3];
-        var deckImage = resources[4]; 
+        var deckImage = resources[4];
         
         var nOfChannels = args.audioSources.length;
         
@@ -217,20 +222,35 @@ define(['require', 'kievII'], function(require, K2) {
     var initPlugin = function(initArgs) {
         var args = initArgs;
 
-        require ([  'image!./assets/images/vsliderhandle_50.png',
-                    'image!./assets/images/vsliderslot_empty.png',
-                    'image!./assets/images/lmh_series.png',
-                    'image!./assets/images/trim_series.png',
-                    'image!./assets/images/KMX-001_deck.png'],
-                    function () {
-                        pluginFunction.call (this, args, arguments);
-                    }.bind(this),
-                    function (err) {
-                        console.error ("Error loading resources");
-                        var failedId = err.requireModules && err.requireModules[0];
-                        requirejs.undef(failedId);
-                        args.hostInterface.setInstanceStatus ('fatal', {description: 'Error initializing plugin: ' + failedId});
-                    });
+        console.log ("toUrl: " + require.toUrl('./assets/images/vsliderhandle_50.png'));
+
+        var requireErr = function (err) {
+            var failedId = err.requireModules && err.requireModules[0];
+            requirejs.undef(failedId);
+            args.hostInterface.setInstanceStatus ('fatal', {description: 'Error initializing plugin: ' + failedId});
+        }.bind(this);
+
+        if (imgResources === null) {
+            var resList = [ 'image!./assets/images/vsliderhandle_50.png!rel',
+                            'image!./assets/images/vsliderslot_empty.png!rel',
+                            'image!./assets/images/lmh_series.png!rel',
+                            'image!./assets/images/trim_series.png!rel',
+                            'image!./assets/images/KMX-001_deck.png!rel'
+            ];
+
+            require (resList,
+                        function () {
+                            imgResources = arguments;
+                            pluginFunction.call (this, args, arguments);
+                        }.bind(this),
+                        function (err) {
+                            requireErr (err);
+                        });
+        }
+
+        else {
+            pluginFunction.call (this, args, imgResources);
+        }
     };
       
     return {
