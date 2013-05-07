@@ -1,4 +1,4 @@
-define(['require', 'kievII'], function(require, K2) {
+define(['require', 'kievII', 'image'], function(require, K2) {
 
     var imgResources = null;
 
