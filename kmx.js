@@ -21,6 +21,37 @@ define(['require', 'kievII', 'image'], function(require, K2) {
         this.name = args.name;
         this.id = args.id;
 
+        if (args.initialState && args.initialState.data) {
+            /* Load data */
+            this.pluginState = args.initialState.data;    
+        }
+        else {
+            /* Use default data */
+            this.pluginState = {
+                gainFader0: 0.5,
+                gainFader1: 0.5,
+                gainFader2: 0.5,
+                gainFader3: 0.5,
+                lowKnob0: 0.5,
+                lowKnob1: 0.5,
+                lowKnob2: 0.5,
+                lowKnob3: 0.5,
+                midKnob0: 0.5,
+                midKnob1: 0.5,
+                midKnob2: 0.5,
+                midKnob3: 0.5,
+                hiKnob0: 0.5,
+                hiKnob1: 0.5,
+                hiKnob2: 0.5,
+                hiKnob3: 0.5,
+                trimKnob0: 0.5,
+                trimKnob1: 0.5,
+                trimKnob2: 0.5,
+                trimKnob3: 0.5,
+                masterVolKnob: 1
+            };
+        }
+
         var faderImage =  resources[0];
         var slotImage =  resources[1];
         var blackKnobImage =  resources[2];
@@ -98,6 +129,7 @@ define(['require', 'kievII', 'image'], function(require, K2) {
                 sliderImg: slotImage,
                 knobImg: faderImage,
                 onValueSet: function (slot, value, element) {
+                    this.pluginState[element] = value;
                     var index = element.split(idPrefix)[1];
                     index = parseInt(index, 10);
                     var audioNode = this.gainMixerNodes[index];
@@ -112,7 +144,7 @@ define(['require', 'kievII', 'image'], function(require, K2) {
             vSliderArgs.ID = idPrefix + i;
             vSliderArgs.left = (43 +  i * spaceWidth);
             this.ui.addElement(new K2.Slider(vSliderArgs));
-            this.ui.setValue ({elementID: vSliderArgs.ID, value: 0.5});
+            this.ui.setValue ({elementID: vSliderArgs.ID, value: this.pluginState[vSliderArgs.ID]});
         }
         
         /* Channel knobs */
@@ -126,48 +158,49 @@ define(['require', 'kievII', 'image'], function(require, K2) {
              imageNum: 50,
              bottomAngularOffset: 33,
              onValueSet: function (slot, value, element) {
-                 var index, realValue;
-                 if (element.indexOf("lowKnob") === 0) {
-                     // Filter gain
-                     realValue = K2.MathUtils.linearRange (0, 1, -12, 12, value);
-                     index = element.split("lowKnob")[1];
-                     index = parseInt(index, 10);
-                     this.lowFilters[index].gain.value = realValue;
-                     console.log ("L: index, value, realValue", index, value, realValue);
-                 }
-                 else if (element.indexOf("midKnob") === 0) {
-                     // Filter gain
-                     realValue = K2.MathUtils.linearRange (0, 1, -12, 12, value);
-                     index = element.split("midKnob")[1];
-                     index = parseInt(index, 10);
-                     this.midFilters[index].gain.value = realValue;
-                     console.log ("M: index, value, realValue", index, value, realValue);
+                this.pluginState[element] = value;
+                var index, realValue;
+                if (element.indexOf("lowKnob") === 0) {
+                    // Filter gain
+                    realValue = K2.MathUtils.linearRange (0, 1, -12, 12, value);
+                    index = element.split("lowKnob")[1];
+                    index = parseInt(index, 10);
+                    this.lowFilters[index].gain.value = realValue;
+                    console.log ("L: index, value, realValue", index, value, realValue);
+                }
+                else if (element.indexOf("midKnob") === 0) {
+                    // Filter gain
+                    realValue = K2.MathUtils.linearRange (0, 1, -12, 12, value);
+                    index = element.split("midKnob")[1];
+                    index = parseInt(index, 10);
+                    this.midFilters[index].gain.value = realValue;
+                    console.log ("M: index, value, realValue", index, value, realValue);
                  }
                  else if (element.indexOf("hiKnob") === 0) {
-                     // Filter gain
-                     realValue = K2.MathUtils.linearRange (0, 1, -12, 12, value);
-                     index = element.split("hiKnob")[1];
-                     index = parseInt(index, 10);
-                     this.highFilters[index].gain.value = realValue;
-                     console.log ("H: index, value, realValue", index, value, realValue);
+                    // Filter gain
+                    realValue = K2.MathUtils.linearRange (0, 1, -12, 12, value);
+                    index = element.split("hiKnob")[1];
+                    index = parseInt(index, 10);
+                    this.highFilters[index].gain.value = realValue;
+                    console.log ("H: index, value, realValue", index, value, realValue);
                  }
                  else if (element.indexOf("trimKnob") === 0) {
-                     // Trim gain
-                     if (value < 0.5) {
-                         realValue = K2.MathUtils.linearRange (0, 0.5, 0, 1, value);
-                     }
-                     else {
-                        realValue = K2.MathUtils.linearRange (0.5, 1, 1, 12, value);
-                     }
-                     index = element.split("trimKnob")[1];
-                     index = parseInt(index, 10);
-                     this.trimNodes[index].gain.value = realValue;
-                     console.log ("T: index, value, realValue", index, value, realValue);
-                 }
-                 else {
-                     console.error ("Cannot parse element", element);
-                 }
-                 this.ui.refresh();
+                    // Trim gain
+                    if (value < 0.5) {
+                        realValue = K2.MathUtils.linearRange (0, 0.5, 0, 1, value);
+                    }
+                    else {
+                       realValue = K2.MathUtils.linearRange (0.5, 1, 1, 12, value);
+                    }
+                    index = element.split("trimKnob")[1];
+                    index = parseInt(index, 10);
+                    this.trimNodes[index].gain.value = realValue;
+                    console.log ("T: index, value, realValue", index, value, realValue);
+                }
+                else {
+                    console.error ("Cannot parse element", element);
+                }
+                this.ui.refresh();
              }.bind(this),
              isListening: true
          };
@@ -186,33 +219,39 @@ define(['require', 'kievII', 'image'], function(require, K2) {
                 knobArgs.ID = id_lmh[knobtype] + i;
                 knobArgs.left = (45 + i * spaceWidth);
                 this.ui.addElement(new K2.Knob(knobArgs));
-                this.ui.setValue ({elementID: knobArgs.ID, value: 0.5});
+                this.ui.setValue ({elementID: knobArgs.ID, value: this.pluginState[knobArgs.ID]});
             }
         }
 		
 		/* Master Volume knob */
         var masterKnobArgs = {
-             ID: "masterVolKnob",
-             left: 478,
-             top: 18,
-			 imagesArray: [redKnobImage],
-             sensitivity : 5000,
-             tileWidth: 50,
-             tileHeight: 50,
-             imageNum: 50,
-             bottomAngularOffset: 33,
-             onValueSet: function (slot, value, element) {
-                 this.masterGainNode.gain.value = value;
-                 this.ui.refresh();
-             }.bind(this),
-             isListening: true
-         };
+            ID: "masterVolKnob",
+            left: 478,
+            top: 18,
+			imagesArray: [redKnobImage],
+            sensitivity : 5000,
+            tileWidth: 50,
+            tileHeight: 50,
+            imageNum: 50,
+            bottomAngularOffset: 33,
+            onValueSet: function (slot, value, element) {
+                this.pluginState[element] = value;
+                this.masterGainNode.gain.value = value;
+                this.ui.refresh();
+            }.bind(this),
+            isListening: true
+        };
 		 
-		 this.ui.addElement(new K2.Knob(masterKnobArgs));
-		 this.ui.setValue ({elementID: masterKnobArgs.ID, value: 1});
+		this.ui.addElement(new K2.Knob(masterKnobArgs));
+		this.ui.setValue ({elementID: masterKnobArgs.ID, value: this.pluginState[masterKnobArgs.ID]});
         
         this.ui.refresh();
 
+        var saveState = function () {
+            return { data: this.pluginState };
+        };
+        args.hostInterface.setSaveState (saveState);
+        
         // Initialization made it so far: plugin is ready.
         args.hostInterface.setInstanceStatus ('ready'); 
   }
