@@ -261,8 +261,6 @@ define(['require', 'github:janesconference/KievII@v0.5.0-jspm/dist/kievII'], fun
     var initPlugin = function(initArgs) {
         var args = initArgs;
 
-        console.log ("toUrl: " + require.toUrl('./assets/images/vsliderhandle_50.png'));
-
         var requireErr = function (err) {
             var failedId = err.requireModules && err.requireModules[0];
             requirejs.undef(failedId);
