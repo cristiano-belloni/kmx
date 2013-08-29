@@ -1,4 +1,4 @@
-define(['require', 'kievII', 'image'], function(require, K2) {
+define(['require', 'github:janesconference/KievII@v0.5.0-jspm/dist/kievII'], function(require, K2) {
 
     var imgResources = null;
 
@@ -270,11 +270,11 @@ define(['require', 'kievII', 'image'], function(require, K2) {
         }.bind(this);
 
         if (imgResources === null) {
-            var resList = [ 'image!./assets/images/vsliderhandle_50.png!rel',
-                            'image!./assets/images/vsliderslot_empty.png!rel',
-                            'image!./assets/images/lmh_series.png!rel',
-                            'image!./assets/images/trim_series.png!rel',
-                            'image!./assets/images/KMX-001_deck.png!rel'
+            var resList = [ './assets/images/vsliderhandle_50.png!image',
+                            './assets/images/vsliderslot_empty.png!image',
+                            './assets/images/lmh_series.png!image',
+                            './assets/images/trim_series.png!image',
+                            './assets/images/KMX-001_deck.png!image'
             ];
 
             require (resList,
