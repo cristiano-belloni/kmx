@@ -5,7 +5,6 @@ define(['require', 'github:janesconference/KievII@0.6.0/kievII'], function(requi
     /* This gets returned to the host as soon as the plugin is loaded */ 
     var pluginConf = {
         name: "KMX",
-        osc: false,
         audioIn: 4,
         audioOut: 1,
         version: '0.0.1',
@@ -167,7 +166,6 @@ define(['require', 'github:janesconference/KievII@0.6.0/kievII'], function(requi
                     index = element.split("lowKnob")[1];
                     index = parseInt(index, 10);
                     this.lowFilters[index].gain.value = realValue;
-                    console.log ("L: index, value, realValue", index, value, realValue);
                 }
                 else if (element.indexOf("midKnob") === 0) {
                     // Filter gain
@@ -175,7 +173,6 @@ define(['require', 'github:janesconference/KievII@0.6.0/kievII'], function(requi
                     index = element.split("midKnob")[1];
                     index = parseInt(index, 10);
                     this.midFilters[index].gain.value = realValue;
-                    console.log ("M: index, value, realValue", index, value, realValue);
                  }
                  else if (element.indexOf("hiKnob") === 0) {
                     // Filter gain
@@ -183,7 +180,6 @@ define(['require', 'github:janesconference/KievII@0.6.0/kievII'], function(requi
                     index = element.split("hiKnob")[1];
                     index = parseInt(index, 10);
                     this.highFilters[index].gain.value = realValue;
-                    console.log ("H: index, value, realValue", index, value, realValue);
                  }
                  else if (element.indexOf("trimKnob") === 0) {
                     // Trim gain
@@ -196,7 +192,6 @@ define(['require', 'github:janesconference/KievII@0.6.0/kievII'], function(requi
                     index = element.split("trimKnob")[1];
                     index = parseInt(index, 10);
                     this.trimNodes[index].gain.value = realValue;
-                    console.log ("T: index, value, realValue", index, value, realValue);
                 }
                 else {
                     console.error ("Cannot parse element", element);
@@ -254,11 +249,11 @@ define(['require', 'github:janesconference/KievII@0.6.0/kievII'], function(requi
         args.hostInterface.setSaveState (saveState.bind(this));
         
         // Initialization made it so far: plugin is ready.
-        args.hostInterface.setInstanceStatus ('ready'); 
+        args.hostInterface.setInstanceStatus ('ready');
   }
   
     /* This function gets called by the host every time an instance of
-       the plugin is requested [e.g: displayed on screen] */        
+       the plugin is requested [e.g: displayed on screen] */
     var initPlugin = function(initArgs) {
         var args = initArgs;
 
