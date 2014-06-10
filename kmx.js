@@ -70,10 +70,10 @@ define(['require', 'github:janesconference/KievII@0.6.0/kievII'], function(requi
         this.midFilters = [];
         this.highFilters = [];
         this.trimNodes = [];
-        this.masterGainNode = context.createGainNode();
+        this.masterGainNode = context.createGain();
         
         for (var i = 0; i < this.audioSources.length; i+=1) {
-            this.gainMixerNodes[i] = context.createGainNode();
+            this.gainMixerNodes[i] = context.createGain();
             this.audioSources[i].connect(this.gainMixerNodes[i]);
             
             this.lowFilters[i] = context.createBiquadFilter(),
@@ -92,7 +92,7 @@ define(['require', 'github:janesconference/KievII@0.6.0/kievII'], function(requi
              this.highFilters[i].frequency.value = 6000;
              this.highFilters[i].gain.value = 0;
              
-             this.trimNodes[i] = context.createGainNode();
+             this.trimNodes[i] = context.createGain();
              this.trimNodes[i].gain.value = 1;
             
              // Create and connect the filter chain
