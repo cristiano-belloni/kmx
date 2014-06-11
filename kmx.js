@@ -82,13 +82,13 @@ define(['require', 'github:janesconference/KievII@0.6.0/kievII'], function(requi
         
              // Set the filter types (you could set all to 5, for a different result, feel free to experiment)
              // Set the filter gains to  0 (gain = boost in dB)
-             this.lowFilters[i].type = 3;
+             this.lowFilters[i].type = "lowshelf";
              this.lowFilters[i].gain.value = 0;
              this.lowFilters[i].frequency.value = 220;
-             this.midFilters[i].type = 5;
+             this.midFilters[i].type = "peaking";
              this.midFilters[i].gain.value = 0;
              this.midFilters[i].frequency.value = 1000;
-             this.highFilters[i].type = 4;
+             this.highFilters[i].type = "highshelf";
              this.highFilters[i].frequency.value = 6000;
              this.highFilters[i].gain.value = 0;
              
